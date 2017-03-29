@@ -5,8 +5,20 @@
     <title>Document</title>
 </head>
 <body>
+    <p>Open the console!</p>
+    <input type="search" id="mySearch" placeholder="Search for zipcode">
     <script>
-    
+        var input = document.getElementByID("mySearch").value;
+        fetch("http://localhost:8000/zips/city/" + input)
+            .then(function(response) {
+                return response.json()
+            })
+            .then(function(data) {
+                console.log(data)
+            })
+            .catch(function(err) {
+                console.error(err)
+            })
     </script>
 </body>
 </html>
