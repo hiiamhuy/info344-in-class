@@ -11,7 +11,7 @@
         var input = document.getElementByID("mySearch").value;
         fetch("http://138.68.253.53/zips/city/" + input)
             .then(function(response) {
-                return response.json()
+                console.log(response.json())
             })
             .then(function(data) {
                 console.log(data)
