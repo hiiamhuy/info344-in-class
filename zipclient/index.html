@@ -9,7 +9,7 @@
     <input type="search" id="mySearch" placeholder="Search for zipcode">
     <script>
         var input = document.getElementByID("mySearch").value;
-        fetch("http://localhost:8000/zips/city/" + input)
+        fetch("http://138.68.253.53/zips/city/" + input)
             .then(function(response) {
                 return response.json()
             })
