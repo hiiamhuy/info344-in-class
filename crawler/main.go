@@ -34,6 +34,7 @@ func main() {
 		fmt.Println(usage)
 		os.Exit(1)
 	}
+	//change the amount of workers, linkq and resultsq can be cahnged for buffer for more size.
 	nWorkers := 10
 	linkq := make(chan string, 100)
 	resultsq := make(chan []string)
