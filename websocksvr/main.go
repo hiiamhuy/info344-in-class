@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 //HandlerContext provides the HTTP handlers with
@@ -34,6 +36,12 @@ func (ctx *HandlerContext) TriggerEvent(w http.ResponseWriter, r *http.Request) 
 	//and the current time for CreatedAt
 	//Then pass the MessageEvent to the `.Notify()` method of your notifier
 	//so that the event gets broadcasted to all web socket clients
+	newMessage := &MessageEvent{
+		Message:   "this is a test",
+		CreatedAt: time.Now(),
+	}
+	ctx.Notifier.Notify(newMessage)
+
 }
 
 //WebSocketUpgradeHandler handles websocket upgrade requests
@@ -48,7 +56,17 @@ func (ctx *HandlerContext) WebSocketUpgradeHandler(w http.ResponseWriter, r *htt
 
 	//after upgrading, use the `.AddClient()` method on your notifier
 	//to add the new client to your notifier's map of clients
-
+	var upgrader = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+		CheckOrigin:     func(r *http.Request) bool { return true },
+	}
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	ctx.Notifier.AddClient(conn)
 }
 
 func main() {
@@ -60,6 +78,7 @@ func main() {
 
 	//TODO: start the notifier by calling
 	//its .Start() method on a new goroutine
+	go ctx.Notifier.Start()
 
 	http.HandleFunc("/v1/ws", ctx.WebSocketUpgradeHandler)
 	http.HandleFunc("/v1/trigger", ctx.TriggerEvent)
