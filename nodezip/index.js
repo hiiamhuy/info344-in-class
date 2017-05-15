@@ -5,7 +5,7 @@
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
-const zips = require('../data/zips.json')
+const zips = require('./zips.json')
 console.log('loaded %d zips', zips.length)
 console.log(`loaded ${zips.length}`)
 // const mymod = require("./mymodule.js")
