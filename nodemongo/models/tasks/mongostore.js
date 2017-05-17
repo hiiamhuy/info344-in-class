@@ -1,5 +1,6 @@
 "use strict";
 
+
 const mongodb = require('mongodb'); //for mongodb.ObjectID()
 
 /**
@@ -18,6 +19,7 @@ class MongoStore {
      * getAll returns all tasks in the store
      */
     getAll() {
+        return this.collection.find().toArray();
         //TODO: implement this
     }
 
@@ -27,6 +29,7 @@ class MongoStore {
      */
     insert(task) {
         //TODO: implement this
+        return this.collection.insert(task);
     }
 
     /**
@@ -36,6 +39,11 @@ class MongoStore {
      */
     async setComplete(id, complete) {
         //TODO: implement this
+        let options = {returnOriginal: false};
+        let updates = {$set: {complete: complete}};
+        let oid = new mongodb.ObjectID(id);
+        let result = await this.collection.findOneAndUpdate({_id: oid}, updates, options);
+        return result.value;
     }
 
     /**
@@ -44,6 +52,7 @@ class MongoStore {
      */
     delete(id) {
         //TODO: implement this
+        return this.collection.deleteOne({_id: new mongodb.ObjectID(id)})
     }
 }
 
