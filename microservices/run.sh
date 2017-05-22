@@ -10,3 +10,28 @@
 #    - CERTPATH = path to cert file in container
 #    - KEYPATH = path to private key file in container
 #    - HELLOADDR = net address of hellosvc container
+
+if [-z "(docker network ls -q -f name=msprivnet)"]
+then 
+    docker network create msprivnet
+fi
+
+docker run -d \ 
+--name hellosvc1 \
+--network msprivnet \
+hiiamhuy/hellosvc
+
+docker run -d \
+--name hellosvc2 \
+--network msprivnet\
+hiiamhuy/hellosvc
+
+docker run -d \
+--name gateway \
+--network msprivnet \ 
+-p 433:433 \
+-v $(pwd)/gateway/tls:/tls:ro \
+-e CERTPATH=/tls/fullchain.pem \
+- KEYPATH=/tls/privkey.pem \
+-e HELLOSVCADDR=hellosvc1, hellosvc2 \
+hiiamhuy/hiiamhuy
